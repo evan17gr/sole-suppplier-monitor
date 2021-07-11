@@ -41,39 +41,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var axios_1 = __importDefault(require("axios"));
+var cors_1 = __importDefault(require("cors"));
 var app = express_1.default();
-var getScrapedData = function () { return __awaiter(void 0, void 0, void 0, function () {
+app.use(cors_1.default());
+var getData = function () { return __awaiter(void 0, void 0, void 0, function () {
     var response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1.default.post('https://vfoof4g2cg-1.algolianet.com/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(4.10.2)%3B%20Browser%20(lite)%3B%20JS%20Helper%20(3.5.3)%3B%20react%20(17.0.2)%3B%20react-instantsearch%20(6.11.2)&x-algolia-api-key=266e68cea9bbc69eeacbe112f46ff2b3&x-algolia-application-id=VFOOF4G2CG', {
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0: return [4 /*yield*/, axios_1.default.post('https://vfoof4g2cg-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(4.10.2)%3B%20Browser%20(lite)%3B%20JS%20Helper%20(3.5.3)%3B%20react%20(17.0.2)%3B%20react-instantsearch%20(6.11.2)&x-algolia-api-key=266e68cea9bbc69eeacbe112f46ff2b3&x-algolia-application-id=VFOOF4G2CG', {
                     requests: [
                         {
-                            indexName: 'production_tss_order_menu_order',
-                            params: 'highlightPreTag=%3Cais-highlight-0000000000%3E&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&filters=type%3Aproduct%20AND%20sub_type%3Asneaker&hitsPerPage=36&userToken=967b7c7374dc1d05&clickAnalytics=true&query=&maxValuesPerFacet=9999&page=0&facets=%5B%22taxonomy.brand%22%2C%22taxonomy.collection%22%2C%22taxonomy.sub_brand%22%5D&tagFilters=',
+                            indexName: 'production_tss_order_release_date_asc',
+                            params: 'highlightPreTag=%3Cais-highlight-0000000000%3E&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&filters=type%3Aproduct%20AND%20sub_type%3Asneaker&hitsPerPage=36&userToken=967b7c7374dc1d05&clickAnalytics=true&query=&maxValuesPerFacet=9999&numericFilters=%5B%22date.released%3E1625946316%22%5D&page=0&facets=%5B%22taxonomy.brand%22%2C%22taxonomy.collection%22%2C%22taxonomy.sub_brand%22%5D&tagFilters=',
                         },
                         {
                             indexName: 'production_tss',
-                            params: 'highlightPreTag=%3Cais-highlight-0000000000%3E&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&filters=type%3Aadvert%20AND%20placement%3Arelease-dates&hitsPerPage=2&userToken=967b7c7374dc1d05&clickAnalytics=true&query=&maxValuesPerFacet=9999&page=0&facets=%5B%22taxonomy.brand%22%2C%22taxonomy.collection%22%2C%22taxonomy.sub_brand%22%5D&tagFilters=',
+                            params: 'highlightPreTag=%3Cais-highlight-0000000000%3E&highlightPostTag=%3C%2Fais-highlight-0000000000%3E&filters=type%3Aadvert%20AND%20placement%3Arelease-dates&hitsPerPage=2&userToken=967b7c7374dc1d05&clickAnalytics=true&query=&maxValuesPerFacet=9999&numericFilters=%5B%22date.released%3E1625946316%22%5D&page=0&facets=%5B%22taxonomy.brand%22%2C%22taxonomy.collection%22%2C%22taxonomy.sub_brand%22%5D&tagFilters=',
                         },
                     ],
                 })];
             case 1:
-                response = _a.sent();
-                console.log(response === null || response === void 0 ? void 0 : response.data);
-                return [2 /*return*/];
+                response = _c.sent();
+                return [2 /*return*/, { status: 'success', results: (_b = (_a = response === null || response === void 0 ? void 0 : response.data) === null || _a === void 0 ? void 0 : _a.results[0]) === null || _b === void 0 ? void 0 : _b.hits }];
         }
     });
 }); };
 app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var scrapedData, shoes, formattedShoes, e_1;
     return __generator(this, function (_a) {
-        try {
-            getScrapedData();
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, getData()];
+            case 1:
+                scrapedData = _a.sent();
+                shoes = scrapedData === null || scrapedData === void 0 ? void 0 : scrapedData.results;
+                formattedShoes = shoes.map(function (shoe) {
+                    var _a, _b, _c, _d, _e, _f, _g, _h;
+                    return {
+                        productLink: (_b = (_a = shoe === null || shoe === void 0 ? void 0 : shoe.variants[0]) === null || _a === void 0 ? void 0 : _a.gallery[0]) === null || _b === void 0 ? void 0 : _b.url,
+                        productImage: (_d = (_c = shoe === null || shoe === void 0 ? void 0 : shoe.variants[0]) === null || _c === void 0 ? void 0 : _c.gallery[0]) === null || _d === void 0 ? void 0 : _d.original_img_url,
+                        productImageAlt: (_f = (_e = shoe === null || shoe === void 0 ? void 0 : shoe.variants[0]) === null || _e === void 0 ? void 0 : _e.gallery[0]) === null || _f === void 0 ? void 0 : _f.alt,
+                        productDescription: shoe === null || shoe === void 0 ? void 0 : shoe.name,
+                        productPrice: (_g = shoe === null || shoe === void 0 ? void 0 : shoe.price) === null || _g === void 0 ? void 0 : _g.regular,
+                        productDate: new Date((_h = shoe === null || shoe === void 0 ? void 0 : shoe.date) === null || _h === void 0 ? void 0 : _h.released).toLocaleDateString('en-UK'),
+                    };
+                });
+                res.send({ shoes: formattedShoes });
+                return [3 /*break*/, 3];
+            case 2:
+                e_1 = _a.sent();
+                console.log(e_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
-        catch (e) {
-            console.log(e);
-        }
-        return [2 /*return*/];
     });
 }); });
 app.listen(process.env.PORT || 3001, function () {
